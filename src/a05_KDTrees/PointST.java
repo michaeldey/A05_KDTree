@@ -2,12 +2,14 @@ package a05_KDTrees;
 
 import java.util.Iterator;
 
+import edu.princeton.cs.algs4.Queue;
 import edu.princeton.cs.algs4.RedBlackBST;
 
 public class PointST<Value> {
 		private PointST<Value> st;
 		private int size;
 		private RedBlackBST rB;
+		private Queue<Point2D> myQueue = new Queue<Point2D>();//holds a Queue of Point2D objects
 		
 	   public PointST()                                // construct an empty symbol table of points 
 	   {
@@ -21,16 +23,18 @@ public class PointST<Value> {
 	   }
 	   
 	   
-	   public int size()                         // number of points
+	   public int size() // number of points
 	   {
 		   return rB.size();
 	   }
 	   
 	   public void put(Point2D p, Value val)      // associate the value val with point p
 	   {		 
+		   myQueue.enqueue(p); //enqueue p into the queue
+		   
 		   //key is p.toString()
 		   //value is object p
-		   rB.put(p.toString() , p);
+		   rB.put(p.toString() , p);		   
 	   }
 	   
 	   
@@ -54,22 +58,21 @@ public class PointST<Value> {
 			@Override
 			public Iterator<Point2D> iterator() {
 				// TODO Auto-generated method stub
-				return new MyIterator();
+				return new MyIterator<Point2D>();
 			}
 			
 		};
 	   }
-	   private class MyIterator<Point2D> implements Iterator<Point2D>{
-
+	   private class MyIterator<Point2D> implements Iterator<Point2D>{		 	   
+		   
 		@Override
 		public boolean hasNext() {
-			return false;
+			return (!myQueue.isEmpty());
 		}
 
 		@Override
 		public Point2D next() {
-			// TODO Auto-generated method stub
-			return null;
+			return (Point2D) myQueue.dequeue(); //returns the next object in the queue
 		}
 		   
 	   }
@@ -78,6 +81,7 @@ public class PointST<Value> {
 	   {
 		   
 	   }
+	   
 	   public           Point2D nearest(Point2D p)             // a nearest neighbor to point p; null if the symbol table is empty 
 	   {
 		   
@@ -85,10 +89,30 @@ public class PointST<Value> {
 	   
 	   
 	   
+	   
 	   public static void main(String[] args)                  // unit testing of the methods (not graded)
 	   {
 		   PointST test = new PointST();
 		   System.out.println("Test isEmpty(): " + test.isEmpty());
+		   
+		   Point2D myPoint = new Point2D(0.5, 0.75);
+		   Point2D myPoint2 = new Point2D(0.1, 0.2);
+		   
+//		   System.out.println(myPoint);
+		   test.put(myPoint, myPoint.toString());
+		   test.put(myPoint2, myPoint2.toString());
+		   
+		   System.out.println(test.get(myPoint));
+		   System.out.println(test.get(myPoint2));
+		   System.out.println();
+		   
+		   System.out.println(test.myQueue);
+		   
+		   System.out.println(test.points().iterator().hasNext());
+		  while(test.points().iterator().hasNext()){
+			  System.out.println(test.points().iterator().next());
+		  }
+		   
 	   }
 
 	}
