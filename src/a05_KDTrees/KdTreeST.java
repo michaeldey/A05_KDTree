@@ -1,10 +1,5 @@
 package a05_KDTrees;
 
-import java.util.NoSuchElementException;
-
-import edu.princeton.cs.algs4.Queue;
-import edu.princeton.cs.algs4.StdIn;
-import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.Point2D;
 
 /*
@@ -18,7 +13,7 @@ public class KdTreeST <Key extends Comparable<Key>>//NearestNeighbor calls KdTre
 	private class Node{
 		   private Key key;			// the key (probably an integer)
 		   private Point2D value;   // the symbol table maps the point to this value
-		   private RectHV rect;    	// the axis-aligned rectangle corresponding to this node
+//		   private RectHV rect;    	// the axis-aligned rectangle corresponding to this node
 		   private Node lb;        	// the left/bottom subtree
 		   private Node rt;        	// the right/top subtree
 		   
@@ -48,7 +43,7 @@ public class KdTreeST <Key extends Comparable<Key>>//NearestNeighbor calls KdTre
 	
 	public Point2D nearest(Point2D query)
 	{
-		//returns nearest Point2D
+		//TO DO returns nearest Point2D
 		return null;		
 	}
 	
