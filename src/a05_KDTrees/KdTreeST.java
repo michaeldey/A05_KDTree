@@ -2,6 +2,10 @@ package a05_KDTrees;
 
 import java.util.NoSuchElementException;
 
+import edu.princeton.cs.algs4.Queue;
+import edu.princeton.cs.algs4.StdIn;
+import edu.princeton.cs.algs4.StdOut;
+
 /*
 * code is based off of Sedgwick's BST.java implementation
 */
@@ -442,7 +446,7 @@ public class KdTreeST <Key extends Comparable<Key>,Value>
      * @param args the command-line arguments
      */
     public static void main(String[] args) { 
-        BST<String, Integer> st = new BST<String, Integer>();
+        KdTreeST<String, Integer> st = new KdTreeST<String, Integer>();
         for (int i = 0; !StdIn.isEmpty(); i++) {
             String key = StdIn.readString();
             st.put(key, i);
