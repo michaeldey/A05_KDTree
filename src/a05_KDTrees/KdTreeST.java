@@ -55,9 +55,9 @@ public class KdTreeST <Key extends Comparable<Key>,Value>
         if (key == null) throw new IllegalArgumentException("called get() with a null key");
         if (x == null) return null;
         int cmp = key.compareTo((Key) x.key);
-        if      (cmp < 0) return get(x.lb, key);
-        else if (cmp > 0) return get(x.rt, key);
-        else              return x.value;
+        if      (cmp < 0) return get(x.lb, key); 	//key is to the left, so send get() to left child
+        else if (cmp > 0) return get(x.rt, key); 	//key is to the right, so send get() to right child
+        else              return x.value;			//key == x so return x.value
     }
     
     
@@ -73,17 +73,17 @@ public class KdTreeST <Key extends Comparable<Key>,Value>
     	int cmp = key.compareTo((Key)x.key);
     	if (cmp==0)
     	{
-    		x.value = val;
+    		x.value = val;					//this is where we want to put, so make x.value val
     		return x;
     	}
     	else if (cmp<0)
     	{
-    		x.lb=put(key, val, x.lb);
+    		x.lb=put(key, val, x.lb);		//we want to put to the left, so call put() on the left node
     		return x;
     	}
     	else 
     	{
-    		x.rt=put(key, val, x.rt);
+    		x.rt=put(key, val, x.rt);		//we want to put to the right, so call put() on the right node
     		return x;
     	}
     	
