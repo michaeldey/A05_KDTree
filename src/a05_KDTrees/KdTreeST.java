@@ -5,27 +5,29 @@ import java.util.NoSuchElementException;
 import edu.princeton.cs.algs4.Queue;
 import edu.princeton.cs.algs4.StdIn;
 import edu.princeton.cs.algs4.StdOut;
+import edu.princeton.cs.algs4.Point2D;
 
 /*
 * code is based off of Sedgwick's BST.java implementation
 */
-public class KdTreeST <Key extends Comparable<Key>,Value>
+public class KdTreeST <Key extends Comparable<Key>>//NearestNeighbor calls KdTreeST<Integer>
 {
 	private Node root; //start of the tree
 	private static int size; //counts the number of nodes
 	
-	private class Node {
-		   private Point2D key;    // the point
-		   private Value value;    // the symbol table maps the point to this value
-		   private RectHV rect;    // the axis-aligned rectangle corresponding to this node
-		   private Node lb;        // the left/bottom subtree
-		   private Node rt;        // the right/top subtree
+	private class Node{
+		   private Key key;			// the key (probably an integer)
+		   private Point2D value;   // the symbol table maps the point to this value
+		   private RectHV rect;    	// the axis-aligned rectangle corresponding to this node
+		   private Node lb;        	// the left/bottom subtree
+		   private Node rt;        	// the right/top subtree
 		   
-		   private Node(Key key, Value value)
+		   private Node(Key key, Point2D value)
 		   {
-			   this.key = (Point2D)key;					//sets the point to the given Point2D
-			   this.value = value;						//value is a String
-			   size++; 									//every time a Node is created, size is incremented
+//			   this.p = (Point2D) key;					//sets the point to the given Point2D
+//			   
+//			   this.value = value;				//value is a String
+			   size++; 							//every time a Node is created, size is incremented
 		   }
 		}
 	
@@ -44,13 +46,19 @@ public class KdTreeST <Key extends Comparable<Key>,Value>
 		return size;
 	}
 	
-    public Value get(Key key) 
+	public Point2D nearest(Point2D query)
+	{
+		//returns nearest Point2D
+		return null;		
+	}
+	
+    public Point2D get(Key key) 
     {
         return get(root, key);
     }
    
     //return value associated with the given key rooted in tree at x
-    private Value get(Node x, Key key) 
+    private Point2D get(Node x, Key key) 
     {
         if (key == null) throw new IllegalArgumentException("called get() with a null key");
         if (x == null) return null;
@@ -60,13 +68,13 @@ public class KdTreeST <Key extends Comparable<Key>,Value>
         else              return x.value;			//key == x so return x.value
     }
     
-    
-    public void put(Key key, Value val) 
+    //NearestNeighbor calls: "kdtree.put(p, i);" where p is a Point2D and i is an int
+    public void put(Point2D val, Key key) 
     {
-        put(key, val, root);
+        put(val, key, root);
     }
     
-    private Node put(Key key, Value val, Node x)
+    private Node put(Point2D val, Key key,  Node x)
     {
     	if (key == null) throw new IllegalArgumentException("called get() with a null key");
     	if (x == null) return new Node(key, val);
@@ -78,12 +86,12 @@ public class KdTreeST <Key extends Comparable<Key>,Value>
     	}
     	else if (cmp<0)
     	{
-    		x.lb=put(key, val, x.lb);		//we want to put to the left, so call put() on the left node
+    		x.lb=put(val, key, x.lb);		//we want to put to the left, so call put() on the left node
     		return x;
     	}
     	else 
     	{
-    		x.rt=put(key, val, x.rt);		//we want to put to the right, so call put() on the right node
+    		x.rt=put(val, key, x.rt);		//we want to put to the right, so call put() on the right node
     		return x;
     	}
     	
