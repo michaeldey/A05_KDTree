@@ -12,7 +12,6 @@ package main;
  *
  ********************************************************/
 
-
 import edu.princeton.cs.algs4.Point2D;
 import edu.princeton.cs.algs4.Queue;
 import edu.princeton.cs.algs4.RectHV;
@@ -22,9 +21,15 @@ import java.util.Arrays;
 import java.util.List;
 
 public class KdTreeST<Value> {
+	
+	//Fields
 	private int size;
 	private Node root;
 	
+	/**Constructor method
+	 *
+	 * @return root null && set size 0
+	 */
 	public KdTreeST() {
 		root = null;
 		size = 0;
@@ -33,7 +38,7 @@ public class KdTreeST<Value> {
 	/**
 	 * Is empty method
 	 *
-	 * @return
+	 * @return 0 if tree is empty
 	 */
 	public boolean isEmpty() {
 		return size() == 0;
@@ -43,7 +48,7 @@ public class KdTreeST<Value> {
 	/**
 	 * size method
 	 *
-	 * @return
+	 * @return size of tree
 	 */
 	public int size() {
 		return size;
@@ -52,37 +57,48 @@ public class KdTreeST<Value> {
 	/**
 	 * put method
 	 *
-	 * @param p
-	 * @param val
+	 * @param Point2D p
+	 * @param Generic Value val
+	 *
+	 * @void Checks where p or val is null
+	 * if not places a value as a Node within the tree
 	 */
 	public void put(Point2D p, Value val) {
+		
 		if (p == null || val == null)
 			throw new NullPointerException("can't be null");
 		root = put(root, p, val, true);
 	}
 	
 	/**
-	 * Node private helper method recursivly places new point based on cases. If none of the cases are found or same x coordinate, places right
+	 * Node private helper method recursively places new point based on cases.
+	 * If none of the cases are found or same x coordinate, places right
 	 *
 	 * @param node
-	 * @param p
-	 * @param val
-	 * @param horz
-	 * @return
+	 * @param p = Point 2D
+	 * @param val = Key Value
+	 * @param horz = true if it's horizontal; false if it's vertical
+	 * @return new Node of RectHV
 	 */
 	private Node put(Node node, Point2D p, Value val, boolean horz) {
-		// for root node
+		
+		// If there is no root Node
+		// Create Root Node
 		if (node == null) {
+			
 			size++;
-			return new Node(p, val,
-					new RectHV(-Double.MAX_VALUE, -Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE));
+			
+			return new Node(p, val, new RectHV(-Double.MAX_VALUE, -Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE));
 		}
 		
+		//Gets distance between two nodes
+		//X distance if horz; Y if it's vertical
+		double compare = compareCoord(node, p, horz);
 		
-		double cmp = compareCoord(node, p, horz);
-		if (cmp < 0)
+		//@return < 0 go to left; > 0 go to the right; == 0 return value
+		if (compare < 0)
 			node.left = put(node.left, p, val, !horz);
-		else if (cmp > 0)
+		else if (compare > 0)
 			node.right = put(node.right, p, val, !horz);
 		else if (node.p.equals(p))
 			node.val = val;
@@ -98,7 +114,7 @@ public class KdTreeST<Value> {
 	 * @param node
 	 * @param p
 	 * @param horz
-	 * @return
+	 * @return If it's Horizontal compare x; If it's vertical compare y
 	 */
 	private double compareCoord(KdTreeST<Value>.Node node, Point2D p, boolean horz) {
 		if (horz) {
@@ -113,10 +129,10 @@ public class KdTreeST<Value> {
 	}
 	
 	/**
-	 * get method
+	 * get method that traverse Tree and looks for Point2D
 	 *
-	 * @param p
-	 * @return
+	 * @param p = Point2D
+	 * @return value of Point2D you're looking for
 	 */
 	public Value get(Point2D p) {
 		if (p == null)
@@ -125,22 +141,23 @@ public class KdTreeST<Value> {
 	}
 	
 	/**
-	 * get helper method, recrusivly finds point
+	 * get helper method, recursively finds point
 	 *
 	 * @param node
 	 * @param p
 	 * @param horz
-	 * @return
+	 * @return Recursively traverse Tree to find Point2D
 	 */
 	private Value get(Node node, Point2D p, boolean horz) {
 		
 		if (node == null)
 			return null;
 		
-		double cmp = compareCoord(node, p, horz);
-		if (cmp < 0)
+		double compare = compareCoord(node, p, horz);
+		
+		if (compare < 0)
 			return get(node.left, p, !horz);
-		else if (cmp > 0)
+		else if (compare > 0)
 			return get(node.right, p, !horz);
 		else if (node.p.equals(p))
 			return node.val;
@@ -152,8 +169,8 @@ public class KdTreeST<Value> {
 	/**
 	 * contains method
 	 *
-	 * @param p
-	 * @return
+	 * @param p = Point2D
+	 * @return True if the Tree contains p
 	 */
 	public boolean contains(Point2D p) {
 		return get(p) != null;
@@ -162,32 +179,45 @@ public class KdTreeST<Value> {
 	/**
 	 * returns range of RectHV in a Que
 	 *
-	 * @param rect
-	 * @return
+	 * @param rect = RectHV
+	 * @return Point2D
 	 */
 	public Iterable<Point2D> range(RectHV rect) {
 		if (rect == null)
 			throw new java.lang.NullPointerException();
+		
+		//Creates a Queue that holds all the points
+		//That are within the rectangle
 		Queue<Point2D> rangequeue = new Queue<Point2D>();
+		
 		range(rect, rangequeue, root);
 		return rangequeue;
 		
 	}
 	
 	/**
-	 * recrusivly enques points if their are with in the range
+	 * recursively enqueues points if their are with in the range
 	 *
-	 * @param rect
-	 * @param rangequeue
-	 * @param node
+	 * @param rect = RectHv
+	 * @param rangequeue = Queue<Point2D>
+	 * @param node = KdTreeST<Value>.Node
 	 */
 	private void range(RectHV rect, Queue<Point2D> rangequeue, KdTreeST<Value>.Node node) {
+		
+		//Base Case
 		if (node == null)
 			return;
+		
+		//Check if the node is not intersecting the Rectangle
 		if (!rect.intersects(node.rect))
 			return;
+		
+		//Checks if node is within Rect
 		if (rect.contains(node.p))
+			//Add node to RangeQueue
 			rangequeue.enqueue(node.p);
+		
+		//Recursively its children left and right
 		range(rect, rangequeue, node.left);
 		range(rect, rangequeue, node.right);
 		
@@ -196,53 +226,90 @@ public class KdTreeST<Value> {
 	/**
 	 * iterable that returns all points using a queue
 	 *
-	 * @return
+	 * @return points in level order
 	 */
 	public Iterable<Point2D> points() {
 		
-		Queue<Point2D> points = new Queue<Point2D>();
-		Queue<Node> queue = new Queue<Node>();
-		queue.enqueue(root);
-		while (!queue.isEmpty()) {
-			Node x = queue.dequeue();
+		//Queue of Point2D objects
+		Queue<Point2D> pointsQueue = new Queue<Point2D>();
+		
+		//Queue of Nodes
+		Queue<Node> nodeQueue = new Queue<Node>();
+		
+		//Sets Root as the first Node
+		nodeQueue.enqueue(root);
+		
+		//While the NodeQueue is not empty
+		while (!nodeQueue.isEmpty()) {
+			
+			//Takes the first node out of the Queue
+			//And store it in X
+			Node x = nodeQueue.dequeue();
+			
+			//Checks if the Node object is Null
 			if (x == null)
 				continue;
-			points.enqueue(x.p);
-			queue.enqueue(x.left);
-			queue.enqueue(x.right);
+			
+			//Places x into the points queue
+			pointsQueue.enqueue(x.p);
+			
+			//Place x children into the node queue
+			nodeQueue.enqueue(x.left);
+			nodeQueue.enqueue(x.right);
 		}
-		return points;
-		
+		return pointsQueue;
 	}
 	
+	/**
+	 * @param p = Point2D
+	 * @return the closest Node based on the Euclidean distance
+	 */
 	public Point2D nearest(Point2D p) {
 		if (p == null)
 			throw new NullPointerException("Point value cannot be null");
-		// recursively search for nearest
+		
+		// recursively search for nearest Node
+		// return nearest Node's Point2D object
 		return nearestNode(p, root, p.distanceSquaredTo(root.p)).p;
 	}
 	
 	private Node nearestNode(Point2D p, Node parent, double currentDistance) {
 		// for each child of root check distance
 		double leftDistance = p.distanceSquaredTo(parent.left().p);
-		double rightDistance = p.distanceSquaredTo(parent.right.p);
+		double rightDistance = p.distanceSquaredTo(parent.right().p);
 		
-		if (leftDistance > currentDistance && rightDistance > currentDistance)
+		//Parent is closer than children
+		if ((leftDistance > currentDistance) && (rightDistance > currentDistance))
+			
+			//Return parent
 			return parent;
 		
-		if (leftDistance == currentDistance && rightDistance == currentDistance)
+		//If node is as close as current distance
+		//Continue searching to the left
+		if ((leftDistance == currentDistance) && (rightDistance == currentDistance))
 			return parent.left();
 		
-		if (leftDistance < currentDistance && leftDistance < rightDistance)
+		//It's on the left side and it's closer to the point
+		if ((leftDistance < currentDistance) && (leftDistance < rightDistance))
+			
+			//Recursively calls nearest node
+			//with left distance as new current distance
 			return nearestNode(p, parent.left(), leftDistance);
 		
+		//It's on the right side and it's closer to the point
 		if (rightDistance < currentDistance)
+			
+			//Recursively calls nearest node
+			//with right distance as new current distance
 			return nearestNode(p, parent.right(), rightDistance);
 		
+		//return root
 		return parent;
 	}
 	
 	private class Node {
+		
+		//Fields
 		private Point2D p; // the point
 		private Value val; // the symbol table maps the point to this value
 		private RectHV rect; // the axis-aligned rectangle corresponding to th//
@@ -250,6 +317,7 @@ public class KdTreeST<Value> {
 		private Node left; // the left/bottom subtree
 		private Node right;
 		
+		//Constructor
 		public Node(Point2D point, Value value, RectHV rectangle) {
 			p = point;
 			val = value;
@@ -261,12 +329,30 @@ public class KdTreeST<Value> {
 			return new ArrayList<Node>(Arrays.asList(left, right));
 		}
 		
+		//Return Left
 		public Node left() {
 			return left;
 		}
 		
+		//Return right
 		public Node right() {
 			return right;
 		}
+	}
+	
+	
+	public static void main(String[] args)
+	{
+		KdTreeST<Point2D> kd  = new KdTreeST<>();
+		System.out.println(kd.isEmpty());
+		System.out.println(kd.size());
+		System.out.println("****************************");
+		Point2D p = new Point2D(0.2, 0.3);
+		Point2D p2 = new Point2D(0.3, 0.3);
+		Point2D p3 = new Point2D(0.4, 0.8);
+		Point2D p4 = new Point2D(0.1, 0.3);
+		Point2D p5 = new Point2D(0.2, 0.8);
+		
+		
 	}
 }
