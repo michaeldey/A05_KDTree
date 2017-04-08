@@ -5,6 +5,7 @@ import java.util.NoSuchElementException;
 
 import edu.princeton.cs.algs4.Queue;
 import edu.princeton.cs.algs4.RedBlackBST;
+import edu.princeton.cs.algs4.Point2D;
 
 public class PointST<Value> {
 		private PointST<Value> st;
