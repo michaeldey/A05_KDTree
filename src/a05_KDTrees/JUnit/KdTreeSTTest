@@ -1,8 +1,8 @@
-package kdTree;
+package JUnit;
 
 import static org.junit.Assert.*;
-import kdTree.KdTreeST;
-import kdTree.RectHV_reducedOptions;
+import main.KdTreeST;
+import edu.princeton.cs.algs4.RectHV;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -12,32 +12,32 @@ import edu.princeton.cs.algs4.Point2D;
 public class KdTreeSTTest {
 	KdTreeST<String> tree = new KdTreeST<>();
 	KdTreeST<String> emptyTree = new KdTreeST<>();
-
+	
 	@Before
 	public void setUp() throws Exception {
 		Point2D[] points = {new Point2D(0,0), new Point2D(1,1), new Point2D(2,2), new Point2D(1,-1), new Point2D(2,-2),
 				new Point2D(-1,1), new Point2D(-2,2), new Point2D(-1,-1), new Point2D(-2,-2)};
 		for (Point2D point : points) tree.put(point, point.toString());
 	}
-
+	
 	@Test
 	public void testKdTreeST() {
 		KdTreeST<Integer> testTree = new KdTreeST<>();
 		assertEquals(0, testTree.size());
 	}
-
+	
 	@Test
 	public void testIsEmpty() {
 		assertEquals(true, emptyTree.isEmpty());
 		assertEquals(false, tree.isEmpty());
 	}
-
+	
 	@Test
 	public void testSize() {
 		assertEquals(0, emptyTree.size());
 		assertEquals(9, tree.size());
 	}
-
+	
 	@Test
 	public void testPut() {
 		tree.put(new Point2D(5,5), "bob");
@@ -54,7 +54,7 @@ public class KdTreeSTTest {
 		tree.put(null, "bob");
 		tree.put(new Point2D(1,5), null);
 	}
-
+	
 	@Test
 	public void testGet() {
 		Point2D[] points = {new Point2D(0,0), new Point2D(1,1), new Point2D(2,2), new Point2D(1,-1), new Point2D(2,-2),
@@ -69,7 +69,7 @@ public class KdTreeSTTest {
 	public void testGetNull() {
 		tree.get(null);
 	}
-
+	
 	@Test
 	public void testContains() {
 		Point2D[] points = {new Point2D(0,0), new Point2D(1,1), new Point2D(2,2), new Point2D(1,-1), new Point2D(2,-2),
@@ -84,7 +84,7 @@ public class KdTreeSTTest {
 	public void testContainsNull() {
 		tree.contains(null);
 	}
-
+	
 	@Test
 	public void testPoints() {
 		Iterable<Point2D> emptyQueue = emptyTree.points();
@@ -94,13 +94,13 @@ public class KdTreeSTTest {
 		int i = 0;
 		for (Point2D point: tree.points()) assertEquals(treeInLevelOrder[i++], point);
 	}
-
+	
 	@Test
 	public void testRange() {
-		Iterable<Point2D> noPoint = tree.range(new RectHV_reducedOptions(10,10,11,11));
-		Iterable<Point2D> onePoint = tree.range(new RectHV_reducedOptions(-0.5, -0.5, 0.5, 0.5));
+		Iterable<Point2D> noPoint = tree.range(new RectHV(10,10,11,11));
+		Iterable<Point2D> onePoint = tree.range(new RectHV(-0.5, -0.5, 0.5, 0.5));
 		Point2D[] onePointAnswer = {new Point2D(0,0)};
-		Iterable<Point2D> fivePoints = tree.range(new RectHV_reducedOptions(-1, -1, 1, 1));
+		Iterable<Point2D> fivePoints = tree.range(new RectHV(-1, -1, 1, 1));
 		Point2D[] fivePointsAnswer = {new Point2D(0,0), new Point2D(-1,1), new Point2D(-1,-1), new Point2D(1,1), new Point2D(1,-1)};
 		for (Point2D point : noPoint) fail("Queue was not empty and contained " + point + ". Queue was " + noPoint.toString());
 		int i = 0;
@@ -113,7 +113,7 @@ public class KdTreeSTTest {
 	public void testRangeNull() {
 		tree.range(null);
 	}
-
+	
 	@Test
 	public void testNearest() {
 		assertEquals(new Point2D(0,0), tree.nearest(new Point2D(0,0)));
@@ -131,5 +131,5 @@ public class KdTreeSTTest {
 	public void testNearestNull() {
 		tree.nearest(null);
 	}
-
+	
 }
