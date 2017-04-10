@@ -1,4 +1,16 @@
-package a05_KDTrees;
+package main;
+
+/********************************************************
+ *
+ *  Project :  <A05 Kd Tree>
+ *  File    :  <KdTreeST.java>
+ *  Name    :  <Ning Zhang, Michael Dey && Alfredo Rodriguez>
+ *  Date    : <4/8/17>
+ * 	Class	: CSIS 2420
+ * 	Teacher	: Gene Riggs
+ *	Description:	constructs a KD Tree algorithm
+ *
+ ********************************************************/
 
 /********************************************************
  *
@@ -264,55 +276,85 @@ public class KdTreeST<Value> {
 	 * @param p = Point2D
 	 * @return the closest Node based on the Euclidean distance
 	 */
-	public Point2D nearest(Point2D p) {
+	public Point2D nearest(Point2D p)
+	{
 		if (p == null)
 			throw new NullPointerException("Point value cannot be null");
-		
+
 		// recursively search for nearest Node
-		// return nearest Node's Point2D object
-		return nearestNode(p, root, p.distanceSquaredTo(root.p)).p;
+		// return nearest Point2D object
+		return nearest(root, p, root.p.distanceSquaredTo(p), root.p, true);
+
 	}
-	
-	private Node nearestNode(Point2D p, Node parent, double currentDistance) {
-		double leftDistance;
-		double rightDistance;		
-		
-		// for each child of root check distance
-		// if there is a left node to check, check it, 
-		//otherwise make the distance MAX_VALUE so it won't return as the shortest
-		if (parent.left!=null) leftDistance = p.distanceSquaredTo(parent.left().p);
-		else leftDistance = Double.MAX_VALUE;
-		
-		// if there is a right node to check, check it, 
-		//otherwise make the distance MAX_VALUE so it won't return as the shortest
-		if (parent.right!=null) rightDistance = p.distanceSquaredTo(parent.right().p);
-		else rightDistance = Double.MAX_VALUE;
-		
-		//Parent is closer than children
-		if ((leftDistance > currentDistance) && (rightDistance > currentDistance))			
-			return parent;
-		
-		//If node is as close as current distance
-		//Continue searching to the left
-		if ((leftDistance == currentDistance) && (rightDistance == currentDistance))
-			return parent.left();
-		
-		//It's on the left side and it's closer to the point
-		if ((leftDistance < currentDistance) && (leftDistance < rightDistance))			
-			//Recursively calls nearest node
-			//with left distance as new current distance
-			return nearestNode(p, parent.left(), leftDistance);
-		
-		//It's on the right side and it's closer to the point
-		if (rightDistance < currentDistance)			
-			//Recursively calls nearest node
-			//with right distance as new current distance
-			return nearestNode(p, parent.right(), rightDistance);
-		
-		//return root
-		return parent;
+
+	/**
+	 *
+	 * @param node
+	 * @param p
+	 * @param minDis
+	 * @param champion
+	 * @param horizontal
+	 * @return Nearest item to perfection
+	 */
+	private Point2D nearest(Node node, Point2D p, double minDis, Point2D champion, boolean horizontal) {
+
+		if (node == null) {
+
+			return champion;
+		}
+
+		double cmp = node.p.distanceSquaredTo(p);
+
+		if (cmp < minDis) {
+
+			minDis = cmp;
+			champion = node.p;
+		}
+
+		if (horizontal) {
+
+			if (node.p.x() < p.x()) {
+
+				champion = nearest(node.right, p, minDis, champion, !horizontal);
+
+				if (node.left != null && node.left.p.distanceSquaredTo(p) < minDis) {
+
+					champion = nearest(node.left, p, minDis, champion, !horizontal);
+				}
+			} else {
+
+				champion = nearest(node.left, p, minDis, champion, !horizontal);
+
+				if (node.right != null && node.right.p.distanceSquaredTo(p) < minDis) {
+
+					champion = nearest(node.right, p, minDis, champion, !horizontal);
+				}
+			}
+		} else {
+
+			if (node.p.y() < p.y()) {
+
+				champion = nearest(node.right, p, minDis, champion, !horizontal);
+
+				if (node.left != null && node.left.p.distanceSquaredTo(p) < minDis) {
+
+					champion = nearest(node.left, p, minDis, champion, !horizontal);
+				}
+			} else {
+
+				champion = nearest(node.left, p, minDis, champion, !horizontal);
+
+				if (node.right != null && node.right.p.distanceSquaredTo(p) < minDis) {
+
+					champion = nearest(node.right, p, minDis, champion, !horizontal);
+				}
+			}
+		}
+		return champion;
+
 	}
-	
+
+
 	private class Node {
 		
 		//Fields
